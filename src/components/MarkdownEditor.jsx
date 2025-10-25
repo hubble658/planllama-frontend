@@ -2,12 +2,12 @@ import { useMemo } from 'react'
 import SimpleMDE from 'react-simplemde-editor'
 import 'easymde/dist/easymde.min.css'
 
-function MarkdownEditor({ value, onChange, placeholder = 'Enter text...' }) {
+function MarkdownEditor({ value, onChange, placeholder = 'Enter text...', disabled = false }) {
   const options = useMemo(() => {
     return {
       spellChecker: false,
       placeholder: placeholder,
-      toolbar: [
+      toolbar: disabled ? false : [
         'bold',
         'italic',
         'heading',
@@ -28,9 +28,10 @@ function MarkdownEditor({ value, onChange, placeholder = 'Enter text...' }) {
       status: false,
       autosave: {
         enabled: false
-      }
+      },
+      readOnly: disabled
     }
-  }, [placeholder])
+  }, [placeholder, disabled])
 
   return (
     <SimpleMDE

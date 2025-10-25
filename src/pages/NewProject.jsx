@@ -1,9 +1,30 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import MarkdownEditor from '../components/MarkdownEditor'
 import EmployeeSelector from '../components/EmployeeSelector'
 import apiService from '../services/api' // api.js'den import edilen APIService instance'ı
+
+const NGROK_URL = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_NGROK_URL_2 : undefined
+// AI Enhancement Constants
+const MODEL = 'ytu-ce-cosmos/Turkish-Llama-8b-DPO-v0.1'
+const NUMBER_OF_SHOTS = 3
+const TEMPERATURE = 0.7
+
+const USR_PROMPT = `I need you to generate a detailed project description for professional project planning. Analyze the examples below to understand the expected level of detail.
+Give only one comprehensive description.
+
+{examples}
+
+─────────────────────────────────────────────────────────────────────────
+
+Now create a comprehensive project description for:
+
+KISA AÇIKLAMA:
+{user_input}
+
+DETAYLI AÇIKLAMA:
+`
 
 function NewProject() {
   const navigate = useNavigate()
@@ -26,6 +47,8 @@ function NewProject() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedEmployees, setSelectedEmployees] = useState([])
   const [languageInput, setLanguageInput] = useState('')
+  const [isEnhancing, setIsEnhancing] = useState(false)
+  const [enhanceData, setEnhanceData] = useState([])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -68,6 +91,155 @@ function NewProject() {
         languages: prev.metadata.languages.filter(l => l !== lang)
       }
     }))
+  }
+
+  // CSV verilerini yükle
+  useEffect(() => {
+    loadCSVData()
+  }, [])
+
+  const loadCSVData = async () => {
+    try {
+      const response = await fetch('/project_plan_final_data_turkish_sum.csv')
+      const text = await response.text()
+      
+      const rows = text.split('\n').slice(1)
+      const parsed = rows
+        .filter(row => row.trim())
+        .map(row => {
+          const columns = row.split(',')
+          return {
+            Project_explanation_TR: columns[0] || ''
+          }
+        })
+      
+      setEnhanceData(parsed)
+    } catch (error) {
+      console.error('CSV yükleme hatası:', error)
+    }
+  }
+
+  // Rastgele örnekler seç
+  const getExamples = (n = NUMBER_OF_SHOTS) => {
+    if (enhanceData.length === 0) return []
+    const k = Math.min(n, enhanceData.length)
+    const shuffled = [...enhanceData].sort(() => Math.random() - 0.5)
+    return shuffled.slice(0, k)
+  }
+
+  // Animasyonlu silme fonksiyonu
+  const animateDelete = async (text, speed = 10) => {
+    return new Promise((resolve) => {
+      let currentLength = text.length
+      const interval = setInterval(() => {
+        if (currentLength > 0) {
+          currentLength -= 1
+          setFormData(prev => ({
+            ...prev,
+            project_description: text.substring(0, currentLength)
+          }))
+        } else {
+          clearInterval(interval)
+          resolve()
+        }
+      }, speed)
+    })
+  }
+
+  // Animasyonlu yazma fonksiyonu
+  const animateType = async (text, speed = 10) => {
+    return new Promise((resolve) => {
+      let currentLength = 0
+      const interval = setInterval(() => {
+        if (currentLength < text.length) {
+          currentLength += 1
+          setFormData(prev => ({
+            ...prev,
+            project_description: text.substring(0, currentLength)
+          }))
+        } else {
+          clearInterval(interval)
+          resolve()
+        }
+      }, speed)
+    })
+  }
+
+  // Enhance with AI - Direkt çalışır, modal yok
+  const handleEnhanceClick = async () => {
+    const currentDescription = formData.project_description.trim()
+    
+    if (!currentDescription) {
+      alert('Lütfen önce bir proje açıklaması girin!')
+      return
+    }
+
+    if (enhanceData.length === 0) {
+      alert('AI örnekleri henüz yüklenmedi, lütfen bekleyin...')
+      return
+    }
+
+    setIsEnhancing(true)
+
+    try {
+      // 1. Mevcut metni animasyonlu olarak sil
+      await animateDelete(currentDescription, 5)
+
+      // 2. AI isteği hazırla
+      const examples = getExamples(NUMBER_OF_SHOTS)
+      let prompt = USR_PROMPT.trim()
+      
+      examples.forEach((row, idx) => {
+        const firstSentence = row.Project_explanation_TR.split('.')[0]
+        prompt += `### Example ${idx + 1}\n`
+        prompt += `Input: ${firstSentence}\n\n`
+        prompt += `Output: ${row.Project_explanation_TR}\n\n---\n\n`
+      })
+
+      prompt += `### Now generate for:\nInput: ${currentDescription}\n\nOutput:`
+
+      console.log(`🔄 Enhancing with ${MODEL}...`)
+
+      const targetUrl = `${NGROK_URL}/v1/chat/completions`
+
+      const res = await fetch(targetUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer sk-local-not-needed'
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          messages: [
+            { role: 'user', content: prompt }
+          ],
+          temperature: TEMPERATURE,
+          max_tokens: 4000,
+          stream: false
+        })
+      })
+
+      if (!res.ok) {
+        const txt = await res.text()
+        throw new Error(txt || res.statusText)
+      }
+
+      const result = await res.json()
+      const enhanced = result.choices?.[0]?.message?.content || ''
+
+      console.log(`✅ Enhanced! Length: ${enhanced.length} chars`)
+
+      // 3. Yeni metni animasyonlu olarak yaz
+      await animateType(enhanced, 5)
+
+    } catch (error) {
+      console.error('Enhance error:', error)
+      alert(`AI zenginleştirme hatası: ${error.message}`)
+      // Hata durumunda orijinal metni geri yaz
+      await animateType(currentDescription, 5)
+    } finally {
+      setIsEnhancing(false)
+    }
   }
 
   const generateJSON = () => {
@@ -312,7 +484,24 @@ function NewProject() {
                     </div>
 
                     {/* Project Description */}
-                    <h5 className="mb-3 mt-4">Project Description *</h5>
+                    <div className="d-flex justify-content-between align-items-center mb-3 mt-4">
+                      <h5 className="mb-0">Project Description *</h5>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={handleEnhanceClick}
+                        disabled={isSubmitting || isEnhancing}
+                      >
+                        {isEnhancing ? (
+                          <>
+                            <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                            Enhancing...
+                          </>
+                        ) : (
+                          <>✨ Enhance with AI</>
+                        )}
+                      </button>
+                    </div>
                     <p className="text-muted small">
                       Describe your project in detail. This will be sent to AI to generate tasks.
                       You can also upload a PDF in the future.
@@ -322,6 +511,7 @@ function NewProject() {
                           value={formData.project_description}
                           onChange={(value) => setFormData(prev => ({ ...prev, project_description: value }))}
                           placeholder="Describe the project goals, requirements, and scope..."
+                          disabled={isEnhancing}
                       />
                     </div>
 
