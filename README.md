@@ -2,7 +2,7 @@
 
 PlanLLaMA Frontend - Basit Görev ve Proje Yönetimi
 
-Bu proje, görevleri ve projeleri yönetmeyi amaçlayana, LLM destekli PlanLLaMA uygulamasının frontend kısmıdır.
+Bu proje, görevleri ve projeleri yönetmeyi amaçlayan, LLM destekli PlanLLaMA uygulamasının frontend kısmıdır.
 
 ## Başlarken
 
