@@ -17,7 +17,7 @@ Projeyi yerel makinenizde kurmak ve çalıştırmak için aşağıdaki adımlar�
 
 1.  Depoyu klonlayın:
     ```sh
-    git clone <repo-adresi>
+    git clone https://github.com/hubble658/planllama-frontend
     ```
 2.  Proje dizinine gidin:
     ```sh
