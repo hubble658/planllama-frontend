@@ -41,6 +41,15 @@ class APIService {
     return this.handleResponse(response)
   }
 
+  async createEmployee(employeeData) {
+    const response = await fetch(`${API_BASE_URL}/employees`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(employeeData)
+    })
+    return this.handleResponse(response)
+  }
+
   // Projects
   async getProjectMembers(projectId) {
     const response = await fetch(`${API_BASE_URL}/projects/${projectId}/members`)
