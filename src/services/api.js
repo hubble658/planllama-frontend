@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+export const API_BASE_URL = 'http://localhost:5000/api';
 
 class APIService {
 
@@ -157,6 +157,17 @@ class APIService {
   // Tasks by Project - Görevleri projeye göre getiren ana metot
   async getTasksByProject(projectId) {
     const response = await fetch(`${API_BASE_URL}/tasks/by-project/${projectId}`)
+    return this.handleResponse(response)
+  }
+
+  // Analyze project with LLaMa (AI) - backend should expose this endpoint
+  async analyzeProject(projectId, options = {}) {
+    const url = `${API_BASE_URL}/projects/${projectId}/analyze`
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(options)
+    })
     return this.handleResponse(response)
   }
 

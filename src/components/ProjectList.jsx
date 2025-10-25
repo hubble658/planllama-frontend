@@ -74,28 +74,36 @@ function ProjectList({ role, projects = [], onDataChange }) {
         )}
       </div>
 
-      <div className="row">
-        {projects.length === 0 ? (
-          <div className="col-12">
-            <div className="alert alert-info">
-              No projects yet. Click "New Project" to create one!
+      {projects.length === 0 ? (
+        <div className="alert alert-info">No projects yet. Click "New Project" to create one!</div>
+      ) : (
+        <div className="list-group">
+          {projects.map(project => (
+            <div key={project.project_id} className="list-group-item d-flex justify-content-between align-items-center">
+              <div style={{ flex: 1, minWidth: 0 }} onClick={() => handleClick(project)}>
+                <div className="d-flex align-items-center">
+                  <div className="me-3">
+                    <strong>{project.name}</strong>
+                  </div>
+                  <div className="text-muted small">
+                    {project.description ? project.description.slice(0, 80) + (project.description.length > 80 ? '...' : '') : ''}
+                  </div>
+                </div>
+                <div className="mt-2 small text-muted">
+                  <span className={`badge bg-${project.status === 'Completed' ? 'success' : project.status === 'In Progress' ? 'primary' : 'warning'} me-2`}>{project.status}</span>
+                  <span className="me-2">Due: {project.dueDate ? new Date(project.dueDate).toLocaleDateString() : 'N/A'}</span>
+                  <span>Tasks: {project.tasksCount || 0}</span>
+                </div>
+              </div>
+
+              <div className="ms-3 d-flex gap-2">
+                <button className="btn btn-sm btn-outline-secondary" onClick={() => handleEditProject(project)}>Edit</button>
+                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDeleteProject(project.project_id)}>Delete</button>
+              </div>
             </div>
-          </div>
-        ) : (
-          projects.map(project => (
-            <div key={project.project_id} className="col-md-6 col-lg-4 mb-3">
-              <ProjectCard
-                project={project}
-                role={role}
-                members={[]}
-                onEdit={handleEditProject}
-                onDelete={handleDeleteProject}
-                onClick={() => handleClick(project)}
-              />
-            </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Project Modal - Only for editing */}
       <ProjectModal

@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import TaskList from "../components/TaskList"
 import ProjectModal from '../components/ProjectModal'
-import api from '../services/api' // Varsayıyoruz ki bu api.js içinde getTasksByProject metodu tanımlı.
+import api from '../services/api' 
+import logo from '../../src/assets/logo.ico'
+import AnalyzeModal from '../components/AnalyzeModal'
 
 function ProjectPage() {
   const { projectId } = useParams()
@@ -15,6 +17,9 @@ function ProjectPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showModal, setShowModal] = useState(false)
+  const [analyzing, setAnalyzing] = useState(false)
+  const [analyzeResult, setAnalyzeResult] = useState(null)
+  const [showAnalyzeModal, setShowAnalyzeModal] = useState(false)
 
   // Load project data on mount
   useEffect(() => {
@@ -90,6 +95,12 @@ function ProjectPage() {
       console.error('Error updating project:', err)
       alert(`Error updating project: ${err.message}`)
     }
+  }
+
+  const handleAnalyzeProject = async () => {
+  if (!project) return
+  // open streaming modal which will call the analyze endpoint
+  setShowAnalyzeModal(true)
   }
 
   if (loading) {
@@ -235,6 +246,14 @@ function ProjectPage() {
                   <button className="btn btn-outline-secondary" disabled>
                     Add Member
                   </button>
+                  <button
+                      className="btn btn-outline-info d-flex align-items-center"
+                      onClick={handleAnalyzeProject}
+                      disabled={analyzing}
+                  >
+                    <img src={logo} alt="LLaMa" style={{ width: 18, height: 18, marginRight: 8 }} />
+                    {analyzing ? 'Analyzing...' : 'Analyze with LLaMa'}
+                  </button>
                 </div>
               </div>
             </div>
@@ -248,6 +267,11 @@ function ProjectPage() {
             onSave={handleSaveProject}
             project={project}
         />
+    <AnalyzeModal
+      show={showAnalyzeModal}
+      onClose={() => setShowAnalyzeModal(false)}
+      projectId={project.project_id}
+    />
       </div>
   )
 }
