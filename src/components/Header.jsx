@@ -1,8 +1,10 @@
 import { useEmployee } from '../context/EmployeeContext'
 import logo from '../assets/logo.ico'
+import { useNavigate } from 'react-router-dom'
 
 function Header({ title, onChangeRole }) {
   const { currentEmployee } = useEmployee()
+  const navigate = useNavigate()
 
   return (
     <div className="dashboard-header">
@@ -10,7 +12,7 @@ function Header({ title, onChangeRole }) {
         <div className="row align-items-center">
           <div className="col">
             <div className="d-flex align-items-center gap-2">
-              <img src={logo} alt="PlanLLaMA" style={{ width: '64px', height: '64px' }} />
+              <img src={logo} className="logo" alt="PlanLLaMA" onClick={() => navigate('/')} />
               <h4 className="mb-0">PlanLLaMA - {title}</h4>
             </div>
           </div>
