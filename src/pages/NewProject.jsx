@@ -115,15 +115,10 @@ function NewProject() {
       console.log('Tasks generated and project created successfully:', response);
 
       if (response.project_id) {
-        // Başarılı: Proje ID'sini al ve yönlendir
-        // ID formatı 'pXX' olduğu için sadece sayı kısmını alıyoruz.
         const projectIndex = response.project_id.replace('p', '');
-
         alert(`Proje "${response.project.name}" başarıyla oluşturuldu ve ${response.generated_tasks.length} görev üretildi.`);
-
-        // Yönlendirme (Örn: /project/1)
-        // navigate(`pm/projects/${projectIndex}`);
-        navigate(`pm`);
+        // Navigate to the new project's page (absolute path)
+        navigate(`/pm/projects/${projectIndex}`, { replace: true });
       } else {
         // API başarılı kod (201) döndürse bile beklenmeyen bir yanıt gelirse
         throw new Error('Proje oluşturulurken beklenmeyen bir yanıt alındı.');
