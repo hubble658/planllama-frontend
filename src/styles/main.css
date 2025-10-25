@@ -1,0 +1,153 @@
+:root {
+  --primary-color: #0d6efd;
+  --success-color: #198754;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --critical-color: #990312;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f8f9fa;
+}
+
+.role-card, .employee-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.role-card:hover, .employee-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
+}
+
+.employee-card {
+  background: white;
+  border-radius: 8px;
+}
+
+.employee-card:hover {
+  border-color: #dee2e6;
+}
+
+.dashboard-header {
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+}
+
+.dashboard-header img {
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
+}
+
+.project-card, .task-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+.project-card:hover, .task-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Modal Styles */
+.modal {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  border-bottom: 1px solid #e9ecef;
+  padding: 1.25rem 1.5rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  border-top: 1px solid #e9ecef;
+  padding: 1.25rem 1.5rem;
+}
+
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Markdown Editor Styles */
+.EasyMDEContainer {
+  margin-bottom: 1rem;
+}
+
+.EasyMDEContainer .CodeMirror {
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  min-height: 200px;
+}
+
+.EasyMDEContainer .editor-toolbar {
+  border-radius: 4px 4px 0 0;
+  border: 1px solid #ced4da;
+  border-bottom: none;
+}
+
+.EasyMDEContainer .CodeMirror-scroll {
+  min-height: 200px;
+}
+
+/* Card Styles for New Project Page */
+.card {
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Employee List Styles */
+.selected-employees .list-group-item {
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  border: 1px solid #dee2e6;
+}
+
+/* Wrapper Box Styles */
+.projects-wrapper {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
