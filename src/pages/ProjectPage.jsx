@@ -271,6 +271,8 @@ function ProjectPage() {
       show={showAnalyzeModal}
       onClose={() => setShowAnalyzeModal(false)}
       projectId={project.project_id}
+      project={project}
+      tasks={tasks}
     />
       </div>
   )
