@@ -72,10 +72,6 @@ function AnalyzeModal({ show, onClose, projectId, project = null, tasks = [] }) 
           body: JSON.stringify(payload),
           signal: controllerRef.current.signal,
         })
-
-        // append a small debug header block to the stream text
-        setStreamText(prev => prev + `\n[HTTP ${res.status} - ${res.headers.get('content-type') || 'unknown content-type'}]\n`)
-
         // remember the target for retry/open
         lastTargetRef.current = targetUrl
 
@@ -148,10 +144,7 @@ function AnalyzeModal({ show, onClose, projectId, project = null, tasks = [] }) 
                   // compute stats and append summary
                   const elapsed = (Date.now() - startTimeRef.current) / 1000
                   const charCount = charCountRef.current
-                  const totalWords = fullTextRef.current.trim() ? fullTextRef.current.trim().split(/\s+/).length : 0
-                  const lineCount = lineCountRef.current
                   const speed = elapsed > 0 ? (charCount / elapsed).toFixed(1) : '0'
-                  setStreamText(prev => prev + `\n\n----------------------------------------\n✅ Tamamlandı!\n📊 İstatistikler:\n   - Toplam karakter: ${charCount}\n   - Toplam kelime: ${totalWords}\n   - Toplam satır (SSE): ${lineCount}\n   - Süre: ${elapsed.toFixed(2)} saniye\n   - Hız: ${speed} karakter/saniye\n----------------------------------------\n`)
                   break
                 }
                 if (data.error) {
@@ -188,12 +181,6 @@ function AnalyzeModal({ show, onClose, projectId, project = null, tasks = [] }) 
                 }
                 if (data.done) {
                   setFinished(true)
-                  const elapsed = (Date.now() - startTimeRef.current) / 1000
-                  const charCount = charCountRef.current
-                  const totalWords = fullTextRef.current.trim() ? fullTextRef.current.trim().split(/\s+/).length : 0
-                  const lineCount = lineCountRef.current
-                  const speed = elapsed > 0 ? (charCount / elapsed).toFixed(1) : '0'
-                  setStreamText(prev => prev + `\n\n----------------------------------------\n✅ Tamamlandı!\n📊 İstatistikler:\n   - Toplam karakter: ${charCount}\n   - Toplam kelime: ${totalWords}\n   - Toplam satır (SSE): ${lineCount}\n   - Süre: ${elapsed.toFixed(2)} saniye\n   - Hız: ${speed} karakter/saniye\n----------------------------------------\n`)
                 }
                 if (data.error) setStreamError(data.error)
               } catch (err) {
