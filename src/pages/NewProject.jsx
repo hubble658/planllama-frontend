@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import MarkdownEditor from '../components/MarkdownEditor'
 import EmployeeSelector from '../components/EmployeeSelector'
-import apiService from '../services/api' // api.js'den import edilen APIService instance'ı
+import apiService from '../services/api'
+import logo from "../assets/logo.ico"; // api.js'den import edilen APIService instance'ı
 
 const NGROK_URL = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_NGROK_URL_2 : undefined
 // AI Enhancement Constants
@@ -498,7 +499,10 @@ function NewProject() {
                             Enhancing...
                           </>
                         ) : (
-                          <>✨ Enhance with AI</>
+                          <>
+                            <img src={logo} alt="LLaMa" style={{ width: 36, height: 36, marginRight: 8 }} />
+                            Enhance with LLaMA
+                          </>
                         )}
                       </button>
                     </div>

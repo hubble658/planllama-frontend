@@ -4,7 +4,7 @@ import ProjectCard from './ProjectCard'
 import ProjectModal from './ProjectModal'
 import api from '../services/api'
 
-function ProjectList({ role, projects = [], onDataChange }) {
+function ProjectList({ role, projects = [], onDataChange, viewMode = 'list' }) {
   const navigate = useNavigate()
   
   // Modal state for editing only
@@ -77,32 +77,69 @@ function ProjectList({ role, projects = [], onDataChange }) {
       {projects.length === 0 ? (
         <div className="alert alert-info">No projects yet. Click "New Project" to create one!</div>
       ) : (
-        <div className="list-group">
-          {projects.map(project => (
-            <div key={project.project_id} className="list-group-item d-flex justify-content-between align-items-center">
-              <div style={{ flex: 1, minWidth: 0 }} onClick={() => handleClick(project)}>
-                <div className="d-flex align-items-center">
-                  <div className="me-3">
-                    <strong>{project.name}</strong>
-                  </div>
-                  <div className="text-muted small">
-                    {project.description ? project.description.slice(0, 80) + (project.description.length > 80 ? '...' : '') : ''}
-                  </div>
+        <>
+          {viewMode === 'grid' ? (
+            // Grid View
+            <div className="row g-3">
+              {projects.map(project => (
+                <div key={project.project_id} className="col-md-6 col-lg-4">
+                  <ProjectCard
+                    project={project}
+                    role={role}
+                    onEdit={handleEditProject}
+                    onDelete={handleDeleteProject}
+                    onClick={() => handleClick(project)}
+                  />
                 </div>
-                <div className="mt-2 small text-muted">
-                  <span className={`badge bg-${project.status === 'Completed' ? 'success' : project.status === 'In Progress' ? 'primary' : 'warning'} me-2`}>{project.status}</span>
-                  <span className="me-2">Due: {project.dueDate ? new Date(project.dueDate).toLocaleDateString() : 'N/A'}</span>
-                  <span>Tasks: {project.tasksCount || 0}</span>
-                </div>
-              </div>
-
-              <div className="ms-3 d-flex gap-2">
-                <button className="btn btn-sm btn-outline-secondary" onClick={() => handleEditProject(project)}>Edit</button>
-                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDeleteProject(project.project_id)}>Delete</button>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          ) : (
+            // List View
+            <div className="list-group">
+              {projects.map(project => (
+                <div key={project.project_id} className="list-group-item list-group-item-action" style={{ cursor: 'pointer' }}>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div style={{ flex: 1, minWidth: 0 }} onClick={() => handleClick(project)}>
+                      <div className="d-flex align-items-center mb-2">
+                        <div className="me-3">
+                          <strong>{project.name}</strong>
+                        </div>
+                        <span className={`badge bg-${project.status === 'Completed' ? 'success' : project.status === 'In Progress' ? 'primary' : 'warning'}`}>
+                          {project.status}
+                        </span>
+                      </div>
+                      <div className="text-muted small mb-2">
+                        {project.description ? project.description.slice(0, 100) + (project.description.length > 100 ? '...' : '') : ''}
+                      </div>
+                      <div className="d-flex gap-3 small text-muted">
+                        <span>📅 Due: {project.dueDate ? new Date(project.dueDate).toLocaleDateString() : 'N/A'}</span>
+                        <span>📋 Tasks: {project.completedTasks || 0}/{project.tasksCount || 0}</span>
+                        <span>👥 Team: {project.team?.length || 0}</span>
+                      </div>
+                    </div>
+
+                    {role === 'pm' && (
+                      <div className="ms-3 d-flex gap-2">
+                        <button 
+                          className="btn btn-sm btn-outline-secondary" 
+                          onClick={(e) => { e.stopPropagation(); handleEditProject(project); }}
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          className="btn btn-sm btn-outline-danger" 
+                          onClick={(e) => { e.stopPropagation(); handleDeleteProject(project.project_id); }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
 
       {/* Project Modal - Only for editing */}
