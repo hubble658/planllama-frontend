@@ -69,7 +69,7 @@ function TaskList({ role, tasks = [], project = null, onDataChange, viewMode = '
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h5 className="mb-0">{project ? `Tasks for ${project}` : (role === 'pm' ? 'All Tasks' : 'My Tasks')}</h5>
+        <h5 className="mb-0">{project ? `Tasks for ${project}` : (role === 'pm' ? ' ' : 'My Tasks')}</h5>
         <div className="d-flex gap-2">
           {role === 'pm' && <button className="btn btn-primary btn-sm" onClick={handleNewTask}>+ New Task</button>}
         </div>

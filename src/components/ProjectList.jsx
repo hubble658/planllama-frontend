@@ -114,7 +114,6 @@ function ProjectList({ role, projects = [], onDataChange, viewMode = 'list' }) {
                       <div className="d-flex gap-3 small text-muted">
                         <span>📅 Due: {project.dueDate ? new Date(project.dueDate).toLocaleDateString() : 'N/A'}</span>
                         <span>📋 Tasks: {project.completedTasks || 0}/{project.tasksCount || 0}</span>
-                        <span>👥 Team: {project.team?.length || 0}</span>
                       </div>
                     </div>
 
