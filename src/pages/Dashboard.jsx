@@ -10,6 +10,7 @@ import api from '../services/api'
 function Dashboard({ role = 'pm' }) {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('projects')
+  const [viewMode, setViewMode] = useState('list') // 'grid' or 'list'
   const { currentEmployee } = useEmployee()
   
   const [projects, setProjects] = useState([])
@@ -96,7 +97,7 @@ function Dashboard({ role = 'pm' }) {
   // Role-based configuration
   const config = {
     pm: {
-      title: 'Project Manager Dashboard',
+      title: 'Product Manager Dashboard',
       stats: {
         totalProjects: { 
           title: 'Total Projects', 
@@ -238,24 +239,79 @@ function Dashboard({ role = 'pm' }) {
 
         {/* Tabs (only for PM) */}
         {currentConfig.showTabs && (
-          <ul className="nav nav-tabs mb-3">
-            <li className="nav-item">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <ul className="nav nav-tabs mb-0">
+              <li className="nav-item">
+                <button 
+                  className={`nav-link ${activeTab === 'projects' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('projects')}
+                >
+                  Projects
+                </button>
+              </li>
+              <li className="nav-item">
+                <button 
+                  className={`nav-link ${activeTab === 'tasks' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('tasks')}
+                >
+                  All Tasks
+                </button>
+              </li>
+            </ul>
+            
+            {/* View Toggle Buttons */}
+            <div className="btn-group btn-group-sm" role="group">
               <button 
-                className={`nav-link ${activeTab === 'projects' ? 'active' : ''}`}
-                onClick={() => setActiveTab('projects')}
+                type="button" 
+                className={`btn ${viewMode === 'grid' ? 'btn-primary' : 'btn-outline-primary'}`}
+                onClick={() => setViewMode('grid')}
+                title="Grid View"
               >
-                Projects
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
+                </svg>
               </button>
-            </li>
-            <li className="nav-item">
               <button 
-                className={`nav-link ${activeTab === 'tasks' ? 'active' : ''}`}
-                onClick={() => setActiveTab('tasks')}
+                type="button" 
+                className={`btn ${viewMode === 'list' ? 'btn-primary' : 'btn-outline-primary'}`}
+                onClick={() => setViewMode('list')}
+                title="List View"
               >
-                All Tasks
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                </svg>
               </button>
-            </li>
-          </ul>
+            </div>
+          </div>
+        )}
+
+        {/* View Toggle for Executor (no tabs) */}
+        {!currentConfig.showTabs && (
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h5 className="mb-0">My Tasks</h5>
+            <div className="btn-group btn-group-sm" role="group">
+              <button 
+                type="button" 
+                className={`btn ${viewMode === 'grid' ? 'btn-primary' : 'btn-outline-primary'}`}
+                onClick={() => setViewMode('grid')}
+                title="Grid View"
+              >
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
+                </svg>
+              </button>
+              <button 
+                type="button" 
+                className={`btn ${viewMode === 'list' ? 'btn-primary' : 'btn-outline-primary'}`}
+                onClick={() => setViewMode('list')}
+                title="List View"
+              >
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
         )}
 
         {/* Content - DATA'YI PROP OLARAK GEÇİR */}
@@ -266,14 +322,16 @@ function Dashboard({ role = 'pm' }) {
                 <ProjectList 
                   role={role} 
                   projects={projects}
-                  onDataChange={loadData} 
+                  onDataChange={loadData}
+                  viewMode={viewMode}
                 />
               )}
               {activeTab === 'tasks' && (
                 <TaskList 
                   role={role} 
                   tasks={tasks}
-                  onDataChange={loadData} 
+                  onDataChange={loadData}
+                  viewMode={viewMode}
                 />
               )}
             </>
@@ -281,7 +339,8 @@ function Dashboard({ role = 'pm' }) {
             <TaskList 
               role={role} 
               tasks={tasks}
-              onDataChange={loadData} 
+              onDataChange={loadData}
+              viewMode={viewMode}
             />
           )}
         </div>

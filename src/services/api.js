@@ -56,6 +56,15 @@ class APIService {
     return this.handleResponse(response)
   }
 
+  async addProjectMember(projectId, employeeId) {
+    const response = await fetch(`${API_BASE_URL}/projects/${projectId}/members`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ employee_id: employeeId })
+    })
+    return this.handleResponse(response)
+  }
+
   async getProjects(options = {}) {
     const params = new URLSearchParams()
     if (options.status) params.append('status', options.status)

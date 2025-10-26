@@ -100,7 +100,7 @@ function NewProject() {
 
   const loadCSVData = async () => {
     try {
-      const response = await fetch('/project_plan_final_data_turkish_sum.csv')
+      const response = await fetch('/project_explanation_tr_only.csv')
       const text = await response.text()
       
       const rows = text.split('\n').slice(1)
@@ -390,10 +390,9 @@ function NewProject() {
                             name="estimated_time"
                             value={formData.estimated_time}
                             onChange={handleChange}
-                            placeholder="e.g., P2D (ISO 8601)"
+                            placeholder="e.g., 30 days, 3 months, 1 year"
                             required
                         />
-                        <small className="text-muted">ISO 8601 Duration (P2D = 2 days, P1M = 1 month)</small>
                       </div>
                     </div>
 
@@ -498,7 +497,7 @@ function NewProject() {
                             Enhancing...
                           </>
                         ) : (
-                          <>✨ Enhance with AI</>
+                          <>✨ Enhance with LLaMA</>
                         )}
                       </button>
                     </div>
@@ -516,7 +515,7 @@ function NewProject() {
                     </div>
 
                     {/* Possible Solution */}
-                    <h5 className="mb-3 mt-4">Possible Solution (Optional)</h5>
+                    <h5 className="mb-3 mt-4">Tech Stack Preferences (Optional)</h5>
                     <p className="text-muted small">
                       Describe potential technical solutions, architecture, or approaches.
                     </p>
@@ -525,6 +524,7 @@ function NewProject() {
                           value={formData.possible_solution}
                           onChange={(value) => setFormData(prev => ({ ...prev, possible_solution: value }))}
                           placeholder="Describe technical approach, architecture, tools to be used..."
+                          maxHeight="10px"
                       />
                     </div>
 

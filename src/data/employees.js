@@ -3,7 +3,7 @@ export const employees = [
   {
     employee_id: 'e01',
     name: 'Sarah Johnson',
-    role: 'Project Manager',
+    role: 'Product Manager',
     user_role: 'pm',
     avatar: 'SJ',
     capacity_hours_per_week: 40,
@@ -25,7 +25,7 @@ export const employees = [
   {
     employee_id: 'e02',
     name: 'David Wilson',
-    role: 'Senior Project Manager',
+    role: 'Senior Product Manager',
     user_role: 'pm',
     avatar: 'DW',
     capacity_hours_per_week: 40,

@@ -41,7 +41,7 @@ export const projects = [
     name: 'E-commerce Platform',
     description: 'Build complete e-commerce solution with payment integration',
     status: 'In Progress',
-    tasksCount: 3,
+    tasksCount: 1,
     completedTasks: 1,
     dueDate: '2025-12-15',
     createdAt: '2025-08-20',
